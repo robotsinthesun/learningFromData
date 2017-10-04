@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import numpy
-import random
 import time
+import random
+import numpy
 import matplotlib.pyplot as plt
 
 def pointsToWeights(p1, p2):
@@ -27,11 +27,8 @@ def classify(p, W):
 
 
 # Run parameters.
-# Training points per run.
 nTrainingPoints = 100
-# Validation points per run.
 nValidationPoints = 10000
-# Number of runs.
 nRuns = 5000
 
 # Test results.
@@ -61,10 +58,10 @@ for run in range(nRuns):
 	Y = [1 for i in range(nTrainingPoints)]
 	for i in range(nTrainingPoints):
 		Y[i] = (classify(X[i], WforF))
-		if Y[i] == 1:
-			pass#plt.plot(X[i,0], X[i,1],  'ro')
-		else:
-			pass#plt.plot(X[i,0], X[i,1],  'bo')
+		#if Y[i] == 1:
+		#	plt.plot(X[i,0], X[i,1],  'ro')
+		#else:
+		#	plt.plot(X[i,0], X[i,1],  'bo')
 
 
 
@@ -82,25 +79,15 @@ for run in range(nRuns):
 		rand = random.randint(0, len(pointIndicesMisclassified)-1)
 		pointIndex = pointIndicesMisclassified[rand]
 		# Get point data.
-		#print "Testing point {num:g}".format(num=pointIndex)
 		x = X[pointIndex]
 		y = Y[pointIndex]
-		#print "   x: {x1:2.4f}, {x2:2.4f}".format(x1 = x[0], x2 = x[1])
-		#print "   y: {y:g}".format(y=y)
-		# Classify the point according to current weights.
-		#print classify(x, W)
 		# Now, apply the learning rule w + yCurrent*x.
 		W = W + numpy.hstack([1,x]) * y
-		#print "   New weight vector: [{w0:2.4f}, {w1:2.4f}, {w2:2.4f}].".format(w0=W[0], w1=W[1], w2=W[2])
 
 		# Reclassify all points according to the new weight vector.
-		#print "   Reclassifying points."
 		pointIndicesMisclassified = []
 		for i in range(nTrainingPoints):
-			#print classify(X[i], W)
-			#print Y[i]
 			if classify(X[i], W) != Y[i]:
-				#print "foo"
 				pointIndicesMisclassified.append(i)
 
 
@@ -121,23 +108,22 @@ for run in range(nRuns):
 	for i in range(nValidationPoints):
 		YvalidationF[i] = (classify(Xvalidation[i], WforF))
 		YvalidationG[i] = (classify(Xvalidation[i], W))
-		#print YvalidationF[i]
-		#print YvalidationG[i]
 		if YvalidationF[i] != YvalidationG[i]:
 			disagreementCounter += 1
-		if YvalidationF[i] == 1:
-			pass#plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'ro', mfc='none')
-		else:
-			pass#plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'bo', mfc='none')
+		#if YvalidationF[i] == 1:
+		#	plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'ro', mfc='none')
+		#else:
+		#	plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'bo', mfc='none')
 
 	disagreementPerRun.append(disagreementCounter/nValidationPoints)
 
 
-	plt.gca().set_xlim(-1,1)
-	plt.gca().set_ylim(-1,1)
-	plt.gca().set_aspect(1)
+	#plt.gca().set_xlim(-1,1)
+	#plt.gca().set_ylim(-1,1)
+	#plt.gca().set_aspect(1)
 
 	#plt.show()
+
 	runDuration = time.time() - runStartTime
 	totalTime = time.time() - startTime
 	averageRunDuration = totalTime / (run+1.)
