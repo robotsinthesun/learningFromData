@@ -27,8 +27,8 @@ def classify(p, W):
 
 
 # Run parameters.
-nTrainingPoints = 100
-nValidationPoints = 10000
+nTrainingPoints = 10
+nValidationPoints = 1000
 nRuns = 5000
 
 # Test results.
@@ -49,8 +49,8 @@ for run in range(nRuns):
 	WforF = pointsToWeights(p1, p2)
 
 	line = weightsToPoints(WforF)
-	#plt.plot(line[:,0], line[:,1], 'k')
-	#plt.plot([p1[0], p2[0]],[p1[1], p2[1]], 'ko')
+	plt.plot(line[:,0], line[:,1], 'k')
+	plt.plot([p1[0], p2[0]],[p1[1], p2[1]], 'ko')
 
 
 	# Produce the training set of inputs X and outputs Y.
@@ -58,10 +58,10 @@ for run in range(nRuns):
 	Y = [1 for i in range(nTrainingPoints)]
 	for i in range(nTrainingPoints):
 		Y[i] = (classify(X[i], WforF))
-		#if Y[i] == 1:
-		#	plt.plot(X[i,0], X[i,1],  'ro')
-		#else:
-		#	plt.plot(X[i,0], X[i,1],  'bo')
+		if Y[i] == 1:
+			plt.plot(X[i,0], X[i,1],  'ro')
+		else:
+			plt.plot(X[i,0], X[i,1],  'bo')
 
 
 
@@ -92,7 +92,7 @@ for run in range(nRuns):
 
 
 	line = weightsToPoints(W)
-	#plt.plot(line[:,0], line[:,1], 'g')
+	plt.plot(line[:,0], line[:,1], 'g')
 
 	iterationsPerRun.append(iterationCounter)
 
@@ -110,19 +110,19 @@ for run in range(nRuns):
 		YvalidationG[i] = (classify(Xvalidation[i], W))
 		if YvalidationF[i] != YvalidationG[i]:
 			disagreementCounter += 1
-		#if YvalidationF[i] == 1:
-		#	plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'ro', mfc='none')
-		#else:
-		#	plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'bo', mfc='none')
+		if YvalidationG[i] == 1:
+			plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'ro', mfc='none', ms='3')
+		else:
+			plt.plot(Xvalidation[i,0], Xvalidation[i,1],  'bo', mfc='none', ms='3')
 
 	disagreementPerRun.append(disagreementCounter/nValidationPoints)
 
 
-	#plt.gca().set_xlim(-1,1)
-	#plt.gca().set_ylim(-1,1)
-	#plt.gca().set_aspect(1)
+	plt.gca().set_xlim(-1,1)
+	plt.gca().set_ylim(-1,1)
+	plt.gca().set_aspect(1)
 
-	#plt.show()
+	plt.show()
 
 	runDuration = time.time() - runStartTime
 	totalTime = time.time() - startTime
