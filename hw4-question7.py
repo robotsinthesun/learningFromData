@@ -15,26 +15,24 @@ nRuns = 1000000
 # Create hypotheses in the form of
 # coefficients of the polynomial a0 + a1x + a2x^2.
 hypothesisModels = [	[1, 0, 0],
-						[0, 1, 0],
-						[1, 1, 0],
-						[0, 0, 1],
-						[1, 0, 1]
-						]
+			[0, 1, 0],
+			[1, 1, 0],
+			[0, 0, 1],
+			[1, 0, 1]
+			]
 hypothesisModels = numpy.array(hypothesisModels)
 modelNames = ['a_0', 'a_1x', 'a_1x + a_0', 'a_2x^2', 'a_2x^2 + a_0']
 
+# Create figure for each hypothesis set and convergence.
 fig, axes = plt.subplots(2,5)
 axesIndex = 0
 
 # Test the different models.
 for model in hypothesisModels:
-	aSum = 0
 	coeffsSum = numpy.zeros(model.shape[0])
 	gCoeffsAll = []
 	coeffsHatProgression = []
-	aAll = []
 	datasets = []
-	aHatAll = []
 	graphs = []
 
 	print "Testing model {c0:g}*a0 + {c1:g}*a1*x + {c2:g}*a2*x^2".format(c0=model[0], c1=model[1], c2=model[2])
@@ -88,17 +86,12 @@ for model in hypothesisModels:
 	# Calculate variance.
 	# Variance is the average squared error between all of the individual g's coming from the data sets and gBar.
 	# For every g, we calculate the squared error between that g and gBar.
-	#squaredErrorAll = []
 	meanSquaredError = numpy.zeros(nPoints)
 	for i in range(nRuns):
 		squaredError = numpy.square( (gCoeffsAll[i][0] + gCoeffsAll[i][1]*f[:,0] + gCoeffsAll[i][2]*numpy.square(f[:,0])) - gBar[:,1])
 		meanSquaredError += squaredError / float(nRuns)
-		#g = numpy.vstack([f[:,0], gCoeffsAll[i][0] + gCoeffsAll[i][1]*f[:,0] + gCoeffsAll[i][2]*numpy.square(f[:,0])]).T
-		#squaredErrorAll.append(numpy.square(g[:,1] - gBar[:,1]))
-	#squaredErrorAll = numpy.vstack(squaredErrorAll)
 	# Then, we average the squared errors of all g's. This is the variance at every data point.
 	varianceAll = meanSquaredError#numpy.average(squaredErrorAll, axis=0)
-	#del squaredErrorAll
 	# To get the total variance, average these over the solution space.
 	variance = numpy.average(meanSquaredError)#numpy.average(varianceAll)
 	print "   Variance: {n:2.4f}.".format(n=variance)
