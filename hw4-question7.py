@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# coding: utf8
 
 import sys
 import numpy
@@ -35,7 +36,7 @@ for model in hypothesisModels:
 	datasets = []
 	graphs = []
 
-	print "Testing model {c0:g}*a0 + {c1:g}*a1*x + {c2:g}*a2*x^2".format(c0=model[0], c1=model[1], c2=model[2])
+	print "Testing model {c0:g}·a0 + {c1:g}·a1·x + {c2:g}·a2·x²".format(c0=model[0], c1=model[1], c2=model[2])
 	for run in range(nRuns):
 		# Pick two points and create data set.
 		datasetX = numpy.random.rand(2)*2-1
@@ -69,7 +70,7 @@ for model in hypothesisModels:
 	# Calc gBar by averaging all g.
 	gBarCoeffs = numpy.average(numpy.array(gCoeffsAll), axis=0)
 	gBar = numpy.vstack([f[:,0], gBarCoeffs[0] + f[:,0]*gBarCoeffs[1] + numpy.square(f[:,0])*gBarCoeffs[2]]).T
-
+	print "   gBar(x) = {c0:2.2f} + {c1:2.2f}·x + {c2:2.2f}·x²".format(c0=gBarCoeffs[0], c1=gBarCoeffs[1], c2=gBarCoeffs[2])
 
 
 	# Calculate bias.
