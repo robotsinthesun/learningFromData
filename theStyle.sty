@@ -1,0 +1,696 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{theStyle}[2010/05/30 -- Bringhurst style, based on classicthesis.]
+
+% ********************************************************************************
+% Package options. ***************************************************************
+% ********************************************************************************
+
+% Load conditions package. *******************************************************
+\RequirePackage{ifthen}
+
+% Define package options. ********************************************************
+\newboolean{@nochapters}	% Use for documents that don't provide chapters.
+\newboolean{@myriad}		% Load Myriad Pro for headings and captions.
+
+% Set option's values. ***********************************************************
+\DeclareOption{nochapters}	{\setboolean{@nochapters}	{true}}
+\DeclareOption{myriad}		{\setboolean{@myriad}		{true}}
+\ProcessOptions\relax		% Do it!
+
+% ********************************************************************************
+% Fonts and text body related packages. ******************************************
+% ********************************************************************************
+
+% Load Robert Slimbachs Myriad Pro font and define a myriad command. *************
+\RequirePackage[osf]{Myriad}	% Has to be loaded before Minion.
+\newcommand{\myriad}{\fontencoding{T1}\fontfamily{Myriad-LF}\fontseries{m}\fontshape{n}\selectfont}
+
+% Load Robert Slimbachs Minion Pro. **********************************************
+\RequirePackage[opticals,mathlf]{MinionPro} %  opticals, fullfamily, osf (old style figures)
+
+% Load Hermann Zapfs Palatino. ***************************************************
+%\RequirePackage[osf,sc]{mathpazo} % Palatino with real small caps and old style figures
+
+% Load Euler math font. **********************************************************
+%\RequirePackage[euler-digits]{eulervm}
+
+
+% Load Bera Mono as typewriter font. *********************************************
+\RequirePackage[scaled=0.75]{beramono}
+
+
+% Define Euler chapter number font. **********************************************
+\newfont{\chapterNumber}{eurb10 scaled 7000}
+
+
+% Define Palatino chapter number font. *******************************************
+%\newfont{\chapterNumber}{pplr9d scaled 7000}
+
+
+% Alternative chapter number fonts. **********************************************
+% Euler eurb10 / Palatino OSF pplr9d / Palatino SC pplrc9d
+% Latin Modern cork-lmr10 / Minion MinionPro-Regular-osf-t1
+% (MinionPro-SemiboldCapt-osf-t1 MinionPro-SemiboldDisp-osf-t1)
+
+
+% Define caps commands. **********************************************************
+% Spaced:
+\DeclareRobustCommand{\spacedallcaps}[1]{\textssc{\MakeTextUppercase{#1}}}%
+\DeclareRobustCommand{\spacedlowsmallcaps}[1]{\textssc{\MakeTextLowercase{#1}}}%
+% Normal:
+\DeclareRobustCommand{\sc}[1]{\textsc{\MakeTextLowercase{#1}}}
+\DeclareRobustCommand{\SC}[1]{\textsc{\MakeTextUppercase{#1}}}
+% Load package for caps selection (\MakeUppercase{} etc.)
+\RequirePackage{textcase}
+
+
+% Aspect ratio ligature. *********************************************************
+\RequirePackage{ar}
+
+
+% Better text fractions. *********************************************************
+\RequirePackage[nice]{units}
+% Commands:
+% \nicefrac{}{}$, \unit[value]{dimension}, \unitfrac[value]{numerator}{denominator}
+
+
+% Load some more symbols. ********************************************************
+\RequirePackage{textcomp}
+
+
+% Get the spacing after macros right. ********************************************
+% Command \xspace creates a space which will be removed if not needed (e.g. in
+% front of periods, commas etc).
+\RequirePackage{xspace}
+
+
+% Line spacing. *****************************************************************
+\RequirePackage{setspace}
+% Commands are: \singlespacing, \onehalfspacing, %\doublespacing, %\setstretch{1.1}.
+% Two environments: singlespace, onehalfspace, doublespace, spacing {1.3}
+
+
+% Better justification. *********************************************************
+%\RequirePackage{microtype}
+
+
+% Textblock size and margins. ***************************************************
+%\areaset[5mm]{288pt}{684pt}% 609 + 33 + 42 head \the\footskip
+\areaset[5mm]{336pt}{672pt}% 609 + 33 + 42 head \the\footskip
+\setlength{\marginparwidth}{7.5em}%
+\setlength{\marginparsep}{2em}%
+
+
+% Prevent typographical faux pas. ***********************************************
+\clubpenalty = 10000 % Single lines at the start of a paragraph (Schusterjungen) 
+\widowpenalty = 10000 % Single lines at the end of a paragraph (Hurenkinder)
+\displaywidowpenalty = 10000 % Same for formulas.
+
+
+% Adjust float placement rules. *************************************************
+% Redefine some values that control if a figure is set on the page where it is
+% defined or shifted to the next page.
+% \renewcommand{\topfraction}{0.85}		% Sets the area of a page from the top that may contain figures (Default = 70%).
+% \renewcommand{\textfraction}{0.1}		% Sets the minimum percentage of text that has to be on a page containing figures (Default = 20%).
+% Alter some LaTeX defaults for better treatment of figures:
+% See p.105 of "TeX Unbound" for suggested values.
+% See pp. 199-200 of Lamport's "LaTeX" book for details.
+% *******************************************************************************
+% General parameters, for ALL pages:
+\renewcommand{\topfraction}{0.9}		% Maximum fraction of floats at top.
+\renewcommand{\bottomfraction}{0.8}		% Maximum fraction of floats at bottom.
+% Parameters for text pages:
+\setcounter{topnumber}{2}				% Maximum number of floats per page at the top.
+\setcounter{bottomnumber}{2}			% Maximum number of floats per page at the bottom.
+\setcounter{totalnumber}{4}				% Maximum number of floats per page. Two may work better.
+\setcounter{dbltopnumber}{2}			% Maximum number of floats per page at the top for 2-column pages.
+\renewcommand{\dbltopfraction}{0.9}		% Maximum float fraction at the top of a 2-column text page.
+\renewcommand{\textfraction}{0.07}		% Minimum text fraction of a text page.
+% Parameters for float pages:
+\renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+% Note: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+
+
+% Bringhurst style lists and enumerations. **************************************
+% Support for easy list configuration.
+\RequirePackage{enumitem}
+% Roman numbered list with labels hanging in the margin.
+\newenvironment
+{ronum}
+{
+	\begin{enumerate}[
+		itemindent=0pt,
+		nolistsep,
+		label=\roman*,
+		ref=\roman{enumi},
+		leftmargin=0pt,
+		labelsep=1em,		% distance between label and textbody
+		align=right,		% set numbers flushright
+		labelwidth=1.5em,
+		itemindent=0pt
+		]
+}
+{
+	\end{enumerate}
+}
+% Arabic numbered list with labels hanging in the margin.
+\newenvironment
+{arnum}
+{
+	\begin{enumerate}[
+		itemindent=0pt,
+		nolistsep,
+		label=\arabic*,
+		ref=\arabic{enumi},
+		leftmargin=0pt,
+		labelsep=1em,		% distance between label and textbody
+		align=right,		% set numbers flushright
+		labelwidth=1.5em,
+		itemindent=0pt
+		]
+}
+{
+	\end{enumerate}
+}
+% Alphabetically labeled list with labels hanging in the margin.
+\newenvironment
+{alnum}
+{
+	\begin{enumerate}[
+		itemindent=0pt,
+		nolistsep,
+		label=\alph*,
+		ref=\alph{enumi},
+		leftmargin=0pt,
+		labelsep=1em,		% distance between label and textbody
+		align=right,		% set numbers flushright
+		labelwidth=1.5em,
+		itemindent=0pt
+		]
+}
+{
+	\end{enumerate}
+}
+
+
+% Simple handling of math inside latex commands.
+\RequirePackage{calc}
+
+
+% Dummy text.
+\RequirePackage{lipsum}
+
+% Handle acronyms. **************************************************************
+\RequirePackage{relsize}
+\RequirePackage[printonlyused,smaller]{acronym}		% By Tobias Oetiker.
+% Provides macros for acronyms and creates list of acronyms.
+% Options: 
+% 	- printonlyused		Don't print all defined acronyms in the list.
+% 	- withpage			Print page of first appearance in the list.
+% 	- smaller			Smaller font. Requires relsize package.
+% 	- footnote			Print long form in footnote at first appearance.
+% 	- nohyperlinks		Prevent hyperref links.
+% 	- dua				Don't use acronyms. Print long names all the time.
+% 	- nolist			Don't write list of acronyms.
+% Define font for acronyms in text.
+\renewcommand*{\acsfont}[1]{\textit{#1}}
+
+% Adjust acronym environment to set font in the list corresponding to font in text. Defines a new \sclabel instead of \bflabel.
+\makeatletter
+\def\sclabel#1{{{#1}\hfill}} % Here the font is defined as acsfont (i.e. no changes are applied as was with \bflabel).
+\renewenvironment{acronym}[1][1]{%
+   \providecommand*{\acro}{\AC@acro}%
+   \providecommand*{\acroplural}{\AC@acroplural}%
+   \long\def\acroextra##1{##1}%
+   \def\@tempa{1}\def\@tempb{#1}%
+   \ifx\@tempa\@tempb%
+      \global\expandafter\let\csname ac@des@mark\endcsname\AC@used%
+      \ifAC@nolist%
+      \else%
+         \begin{list}{}%
+                {\settowidth{\labelwidth}{\normalfont{#1}\hspace*{3em}}% change according to your needs
+                \setlength{\leftmargin}{\labelwidth}%
+                \addtolength{\leftmargin}{\labelsep}%
+                \renewcommand{\makelabel}{\sclabel}}	% This is the previously defined label.
+      \fi%
+   \else%
+      \begin{AC@deflist}{#1}%
+   \fi%
+  }%
+  {%
+   \ifx\AC@populated\AC@used\else%
+      \ifAC@nolist%
+      \else%
+          \item[]\relax%
+      \fi%
+   \fi%
+   \expandafter\ifx\csname ac@des@mark\endcsname\AC@used%
+      \ifAC@nolist%
+      \else%
+        \end{list}%
+      \fi%
+   \else%
+      \end{AC@deflist}%
+   \fi}%
+\renewenvironment{AC@deflist}[1]%
+        {\ifAC@nolist%
+         \else%
+            \raggedright\begin{list}{}%
+                {\settowidth{\labelwidth}{\normalfont{\textsf{#1}}\hspace*{3em}}% change according to your needs
+                \setlength{\leftmargin}{\labelwidth}%
+                \addtolength{\leftmargin}{\labelsep}%
+                \renewcommand{\makelabel}{\sclabel}}%
+          \fi}%
+        {\ifAC@nolist%
+         \else%
+            \end{list}%
+         \fi}%
+\makeatother
+
+
+
+
+% Notes in the page margins. ****************************************************
+\def\graffito@setup{%
+	\slshape\footnotesize%
+	\parindent=0pt \lineskip=0pt \lineskiplimit=0pt %
+	\tolerance=2000 \hyphenpenalty=300 \exhyphenpenalty=300%
+	\doublehyphendemerits=100000%
+	\finalhyphendemerits=\doublehyphendemerits
+	}
+\DeclareRobustCommand{\graffito}[1]{\marginpar%
+	[\graffito@setup\raggedleft\hspace{0pt}{#1}]%
+	{\graffito@setup\raggedright\hspace{0pt}{#1}}
+	}
+% Thanks to Lorenzo Pantieri and Enrico Gregorio.
+
+
+
+
+
+% *******************************************************************************
+% Fixes. ************************************************************************
+% *******************************************************************************
+\RequirePackage{mparhack} % Prevent \marginpar to show up on the wrong side.
+\RequirePackage{fixltx2e} % Fixes some Latex2e stuff.
+
+
+
+
+% *******************************************************************************
+% Graphics. *********************************************************************
+% *******************************************************************************
+
+% Define colours. ***************************************************************
+\RequirePackage[dvipsnames]{xcolor}
+\definecolor{halfgray}{gray}{0.55} % For chapter numbers (cmyk = .5 .55 .6 .0).
+\definecolor{darkgray}{gray}{0.35}
+\definecolor{webgreen}		{rgb}	{0,.5,0}
+\definecolor{webbrown}		{rgb}	{.6,0,0}
+\definecolor{maroon}		{cmyk}	{0, 0.87, 0.68, 0.32}
+\definecolor{myRed}		{RGB}	{220,40,0}
+\definecolor{myBlue}	{RGB}	{10,90,180}
+\definecolor{myOrange}		{RGB}	{255,133,72}
+% Own colours. Still to test...
+\definecolor{royalred}		{cmyk}	{0 .82 .77 .8}				% Finished.
+\definecolor{red1}			{cmyk}	{0, 1, 0.61, 0.43}
+\definecolor{red2}			{cmyk}	{.78 .82 .30 1}
+\definecolor{royalorange}	{cmyk}	{0 .49 .79 .21}
+\definecolor{royalyellow}	{cmyk}	{0 .3 .75 1}
+\definecolor{bottlegreen}	{cmyk}	{.33 0 .22 60}
+\definecolor{royalblue}		{cmyk}	{1, 0.50, 0, 0}
+
+
+% Graphics package provides picture environment. ********************************
+\RequirePackage{graphicx}
+
+
+% Define captions look. *********************************************************
+\RequirePackage[	skip=5pt,
+				format=plain,
+				labelfont=bf,
+				tablename=Tab.,
+				figurename=Fig.
+				]{caption}
+\renewcommand{\captionfont}{\small}
+
+% Provide background image functions. *******************************************
+\RequirePackage{wallpaper}
+
+
+% *******************************************************************************
+% Tables. ***********************************************************************
+% *******************************************************************************
+
+% Define column spacing with rubber lengths. ************************************
+\RequirePackage{tabularx}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}	% Flush right column.
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}	% Flush left column.
+
+% Better rules in tables. *******************************************************
+\RequirePackage{booktabs}
+
+
+
+
+
+% *******************************************************************************
+% Bringhurst style chapter and section headings. ********************************
+% *******************************************************************************
+
+% Reduce skip before chapter headings. ******************************************
+%\renewcommand*{\chapterheadstartvskip}{\vspace*{-topskip}}
+
+
+% Provide easy ways to configure title appearance. ******************************
+\RequirePackage{titlesec}	% By Javier Bezos.
+
+
+% Parts. ************************************************************************
+\titleformat
+	{\part}
+	[display]							% Seperate paragraphs for label and title.
+	{\normalfont\centering\large}		% Overall format (label and title).
+	{\thispagestyle{empty}\partname~\MakeTextUppercase{\thepart}}	% Label format.
+	{1em}								% Horizontal space between label and title.
+	{\color{royalred}\spacedallcaps}	% Code preceeding title text.
+
+
+% Chapters. *********************************************************************
+\ifthenelse{\boolean{@nochapters}}%
+{\relax}
+{
+\titleformat
+	{\chapter}							% The title to re-define.
+	[display]							% Separate paragraphs for label and title.
+	{\relax}							% Overall format: \relax just does nothing.
+	{									% Format of the label (i.e. the number).
+		\mbox{}
+		\marginpar	[					% Set into the margin. [left margin]{right margin}
+			\raggedleft					% Flushright.
+			\vspace*{4\baselineskip}	% 3 lines below the text
+			\color{halfgray}			% Shaded.
+			\chapterNumber				% The pre-defined font.
+			\thechapter					% Finally, set the number.
+			]
+			{
+			\raggedright				% Flushleft.
+			\vspace*{4\baselineskip}	% 3 lines below the text
+			\color{halfgray}			% Shaded.
+			\chapterNumber				% The pre-defined font.
+			\thechapter					% Finally set the number.
+			}
+	}
+	{0pt}								% Horizontal space between title and label.
+	{\raggedright\spacedallcaps}		% Code preceding the title text.
+	[\normalsize\vspace*{1\baselineskip}\titlerule]	% Code following the title text.
+% Prevent indentation after heading (*) and adjust space between title and text.
+\titlespacing*{\chapter}{0pt}{0pt}{\baselineskip}
+}
+
+% Sections. *********************************************************************
+\titleformat{\section}					% Default format: hang.
+	{\relax}
+	{\textsc{\MakeTextLowercase{\thesection}}}	% Label: spaced small caps.
+	{1em}										% One em between label and title.
+	{\spacedlowsmallcaps}						% Title: spaced small caps.
+% Adjust vertical space to have a multitude of the leading.
+\titlespacing*{\section}{0pt}{0.9\baselineskip}{0.95\baselineskip}
+
+
+% Subsections. ******************************************************************
+\titleformat{\subsection}				% Default format: hang.
+	{\relax}
+	{\textsc{\MakeTextLowercase{\thesubsection}}}
+	{1em}
+	{\normalsize\itshape}
+% Adjust vertical space to have a multitude of the leading.
+\titlespacing*{\subsection}{0pt}{\baselineskip}{1\baselineskip}
+
+
+% Subsubsections. ***************************************************************
+\titleformat{\subsubsection}			% Default format: hang.
+	{\relax}
+	{\textsc{\MakeTextLowercase{\thesubsubsection}}}
+	{1em}
+	{\normalsize\itshape}
+% Adjust vertical space to have a multitude of the leading.
+%\titlespacing*{\subsubsection}{0pt}{\baselineskip}{1\baselineskip}
+% This messes up all other titles. Just don't use subsubsections...
+
+
+% Paragraphs. *******************************************************************
+\titleformat{\paragraph}
+	[runin]								% Title in first line of paragraph.
+	{\normalfont\normalsize}			% Font style before.			???????????????????????
+	{\theparagraph}						% The label.
+	{0pt}								% No space between label and title. No label anyway...
+	{\spacedlowsmallcaps}				% Font style.
+	[\hspace*{-6pt}]
+% Adjust vertical space to have a multitude of the leading.
+\titlespacing*{\paragraph}{0pt}{1\baselineskip}{1\baselineskip}
+
+
+
+
+
+% *******************************************************************************
+% Layout of the table of contents. **********************************************
+% *******************************************************************************
+
+% Provide easy ways to configure TOC appearance. ********************************
+% Option titles causes the headings of TOC, LOF and LOT to be set Latex' default
+% way. Otherwise tocloft provides commands to specify heading layout manually.
+\RequirePackage[titles]{tocloft}	% By Peter Wilson.
+
+% Avoid page numbers being right-aligned in fixed-size box. *********************
+	\newlength{\newnumberwidth}
+	\settowidth{\newnumberwidth}{999}	% Yields overfull hbox for pages > 999.
+	\cftsetpnumwidth{\newnumberwidth}
+
+% Have the bib neatly positioned after the rest. ********************************
+	\newlength{\beforebibskip}  
+	\setlength{\beforebibskip}{0em}
+
+% Space for more than nine chapters. ********************************************
+	%\newlength{\newchnumberwidth}
+	%\settowidth{\newchnumberwidth}{.} % <--- tweak here if more space required
+	%\ifthenelse{\boolean{@manychapters}}% <--- many chapters option
+	%{%    
+	%	\addtolength{\cftchapnumwidth}{\newchnumberwidth}%
+	%	\addtolength{\cftsecnumwidth}{\newchnumberwidth}
+	%	\addtolength{\cftsecindent}{\newchnumberwidth}
+	%	\addtolength{\cftsubsecnumwidth}{\newchnumberwidth}
+	%	\addtolength{\cftsubsecindent}{2\newchnumberwidth}
+	%	\addtolength{\cftsubsubsecnumwidth}{\newchnumberwidth}
+	%}
+	%{\relax}%
+
+
+% Pagenumbers right after the titles. *******************************************
+
+% Parts.
+%\ifthenelse{\boolean{@parts}}%
+%	    {%
+%	      \renewcommand{\thepart}{\roman{part}}%
+%	      \renewcommand{\cftpartpresnum}{\scshape}%  \MakeTextLowercase
+%	%      \renewcommand{\cftpartaftersnum}{\cftchapaftersnum}%
+%	%      \renewcommand{\cftpartaftersnumb}{\quad}%
+%	%      \setlength{\cftpartnumwidth}{\cftpartnumwidth}
+%	      \renewcommand{\cftpartfont}{\color{RoyalBlue}\normalfont}%
+%	      \renewcommand{\cftpartpagefont}{\normalfont}%
+%	      \ifthenelse{\boolean{@dottedtoc}}{\relax}%
+%	      {%
+%	      	\renewcommand{\cftpartleader}{\hspace{1.5em}}% 
+%	      	\renewcommand{\cftpartafterpnum}{\cftparfillskip}%
+%	      }%        
+%	      \setlength{\cftbeforepartskip}{1em}%
+%	      \setlength{\cftbeforechapskip}{.1em}%
+%	      \setlength{\beforebibskip}{\cftbeforepartskip}%
+%	     }{\relax}
+
+
+% Chapters. *********************************************************************
+\ifthenelse{\boolean{@nochapters}}%
+{\relax}%
+{%
+	\renewcommand{\cftchappresnum}		{\scshape\MakeTextLowercase}	% Style of number before chapter.
+	\renewcommand{\cftchapfont}			{\normalfont}					% Style of chapter name. scfont not working here, see fix below.
+	\renewcommand{\cftchappagefont}		{\normalfont}					% Style of page number.
+	%\renewcommand{\cftchapdotsep}		{\cftdotsep}					% Toggle dot separators.
+	\renewcommand{\cftchapleader}		{\hspace{1.5em}}				% Space between name and page #.
+	\renewcommand{\cftchapafterpnum}	{\cftparfillskip}				% Fill space after page #.
+	%\setlength{\cftbeforechapskip}		{0.62\baselineskip}				% Vertical space before chapter.
+
+
+	% Work-around to get the spacing after the toc/lot/lof-titles right.
+	{%
+		\ifthenelse{\boolean{@nochapters}}%
+		{\relax}%
+		{\AtBeginDocument{\addtocontents{toc}{\protect\vspace{-\cftbeforechapskip}}}}
+	}
+
+	% Work-around to get the spaced low small caps into the toc.
+	% Use modified \chapter (thanks to Hinrich Harms)
+	\let\oldchap=\chapter
+	\renewcommand*{\chapter}{\secdef{\Chap}{\ChapS}}
+	\newcommand\ChapS[1]{\oldchap*{#1}}%
+	\newcommand\Chap[2][]{\oldchap[\spacedlowsmallcaps{#1}]{#2}}
+}
+
+
+% Sections. ********************************************************************
+\ifthenelse{\boolean{@nochapters}}	% Adjust spacing if no chapters are used.
+{%
+	\setlength{\cftbeforesecskip}{.1em}%
+	\setlength{\beforebibskip}{1em}%
+}%
+{\relax}
+
+\renewcommand{\cftsecpresnum}{\scshape\MakeTextLowercase}	% Style of number before chapter.
+\renewcommand{\cftsecfont}{\normalfont}						% Style of chapter name.
+\renewcommand{\cftsecpagefont}{\normalfont}					% Style of page number.
+\renewcommand{\cftsecleader}{\hspace{1.5em}}				% Space between name and page #.
+\renewcommand{\cftsecafterpnum}{\cftparfillskip}			% Fill space after page #.
+%\renewcommand{\cftsecindent}{0em}							% No indentation.
+
+
+% Subsections. *****************************************************************
+\renewcommand{\cftsubsecpresnum}{\scshape\MakeTextLowercase}	% Style of number before chapter.
+\renewcommand{\cftsubsecfont}{\normalfont}						% Style of chapter name.
+\renewcommand{\cftsubsecpagefont}{\normalfont}					% Style of page number.
+\renewcommand{\cftsubsecleader}{\hspace{1.5em}}					% Space between name and page #.
+\renewcommand{\cftsubsecafterpnum}{\cftparfillskip}				% Fill space after page #.
+%\renewcommand{\cftsubsecindent}{0em}							% No indentation.
+
+% Subsubsections. **************************************************************
+\renewcommand{\cftsubsubsecpresnum}{\scshape\MakeTextLowercase}	% Style of number before chapter.
+\renewcommand{\cftsubsubsecfont}{\normalfont}					% Style of chapter name.
+\renewcommand{\cftsubsubsecleader}{\hspace{1.5em}}				% Space between name and page #.
+\renewcommand{\cftsubsubsecafterpnum}{\cftparfillskip}			% Fill space after page #.
+%\renewcommand{\cftsubsubsecindent}{0em}						% No indentation.
+
+
+%% figures
+%\renewcommand{\cftfigpresnum}{\scshape\MakeTextLowercase}% 
+%\renewcommand{\cftfigfont}{\normalfont}%                 
+%
+%	      {%
+%		      \renewcommand{\cftfigleader}{\hspace{1.5em}}% 
+%		      \renewcommand{\cftfigafterpnum}{\cftparfillskip}%
+%	      }
+%	      \renewcommand{\cftfigpresnum}{\figurename~}%Fig.~}
+%	      \newlength{\figurelabelwidth}
+%	      \settowidth{\figurelabelwidth}{\cftfigpresnum~99}
+%	      \addtolength{\figurelabelwidth}{2.5em}
+%	      \cftsetindents{figure}{0em}{\figurelabelwidth}
+%	      
+%	      
+%% tables
+%	\renewcommand{\cfttabpresnum}{\scshape\MakeTextLowercase}%
+%	\renewcommand{\cfttabfont}{\normalfont}%
+%	
+%%\ifthenelse{\boolean{@dottedtoc}}{\relax}%
+%%{%
+%	\renewcommand{\cfttableader}{\hspace{1.5em}}% 
+%	\renewcommand{\cfttabafterpnum}{\cftparfillskip}%   
+%%} 
+%
+%\renewcommand{\cfttabpresnum}{\tablename~}%Tab.~}
+%\newlength{\tablelabelwidth}
+%\settowidth{\tablelabelwidth}{\cfttabpresnum~99}
+%\addtolength{\tablelabelwidth}{2.5em}
+%%\cftsetindents{table}{0em}{\tablelabelwidth}
+%\cftsetindents{table}{0em}{\figurelabelwidth}
+
+
+
+
+%% listings
+%{%
+%	\newlistof{listings}{lol}{\lstlistlistingname}%
+%	\renewcommand{\cftlistingspresnum}{\scshape\MakeTextLowercase}%
+%	\renewcommand{\cftlistingsfont}{\normalfont}%
+%	\renewcommand{\cftlistingspresnum}{\lstlistingname~}%
+%	\renewcommand{\cftlistingspagefont}{\normalfont}%
+%
+%	%\ifthenelse{\boolean{@dottedtoc}}{\relax}%
+%	%{%  
+%		\renewcommand{\cftlistingsleader}{\hspace{1.5em}}%
+%		\renewcommand{\cftlistingsafterpnum}{\cftparfillskip}%
+%	%}
+%
+%	\newlength{\listingslabelwidth}%
+%	\settowidth{\listingslabelwidth}{\cftlistingspresnum~99}%
+%	\addtolength{\listingslabelwidth}{2.5em}%
+%	%\cftsetindents{listings}{0em}{\listingslabelwidth}%
+%	\cftsetindents{listings}{0em}{\figurelabelwidth}%
+%	\let\l@lstlisting\l@listings%
+%	\let\lstlistoflistings\listoflistings%
+%}
+
+	    \newcommand{\tocEntry}[1]{% for bib, etc.
+	    	\ifpdf\texorpdfstring{\spacedlowsmallcaps{#1}}{#1}%
+	        \else{#1}\fi%
+	    }
+	
+	    % remove the vertical space between lof/lot entries of different chapters
+%{%
+%	        \AtBeginDocument{%
+%	            \addtocontents{lof}{\protect\vspace{-10\cftbeforechapskip}}%
+%	            \addtocontents{lot}{\protect\vspace{-10\cftbeforechapskip}}%
+%	            \ifthenelse{\boolean{@listings}}%        
+%	    				{%
+%	             	\addtocontents{lol}{\protect\vspace{-10\cftbeforechapskip}}%
+%	            }{\relax}%
+%	        }%
+%	    }
+
+% *******************************************************************************
+% Header and footer layout. *****************************************************
+% *******************************************************************************
+
+%\RequirePackage{fancyhdr}
+% For the usual page, define pagestyle fancy.
+%\lhead{}
+%\chead{\leftmark}
+%\rhead{}
+%\lfoot{}
+%\cfoot{}
+%\rfoot{\thepage}
+%\renewcommand{\headrulewidth}{0.4pt}
+%\renewcommand{\footrulewidth}{0pt}
+%\setlength{\footskip}{\baselineskip}
+%\setlength{\headsep}{\baselineskip}
+
+% Set the headrule style.
+%\renewcommand{\headrule}{{\color{halfgray}%
+%\hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+
+% Redefine pagestyle plain for first pages of chapters.
+%\fancypagestyle{plain}{%
+%\fancyhf{} % clear all header and footer fields
+%\fancyfoot[RO]{\thepage} %RO=right odd, RE=right even
+%\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\footrulewidth}{0pt}}
+
+
+
+
+
+% *******************************************************************************
+% Footnote layout. **************************************************************
+% *******************************************************************************
+% No indentation in footnotes and numbers hanging in the margin. However, footnote numbers are superscripted...
+\RequirePackage[flushmargin,splitrule, bottom]{footmisc}
+\addtolength{\footskip}{0.5cm}
+\setlength{\footnotemargin}{-1em}
+\setlength{\footnotesep}{1em}
+
+% Get non-superscript numbers in footnotes.
+\makeatletter
+\renewcommand\@makefntext[1]
+	{\noindent \makebox[0pt][r]{\@thefnmark\space\space\space}#1}
+\makeatother

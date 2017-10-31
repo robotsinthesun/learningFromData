@@ -1,0 +1,225 @@
+\documentclass[	11pt,
+				a4paper,
+				twoside,
+				titlepage,
+				%bibtotocnumbered,
+				bibtotoc,
+				openright,
+				cleardoublepage=empty
+				]{scrartcl}
+
+% Font- and input encryption
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Language settings.
+\usepackage[english]{babel}
+
+% Load layout stuff.
+\usepackage[nochapters]{theStyle}
+
+
+
+% Bibliography style
+\usepackage{natbib}
+\bibliographystyle{DavidGer}
+
+% Single bib entries in text.
+\usepackage{bibentry}
+
+% Smaller font and tight lead for bibliography.
+\def\bibfont{\footnotesize}
+\setlength{\bibsep}{8.0pt}
+
+% Document data. ******************************************
+\newcommand{\me}{Paul Bomke}
+\newcommand{\myTitle}{Adaptive fluid dynamic structures using dielectic elastomers}
+\newcommand{\mySubtitle}{PhD proposal}
+\newcommand{\eize}{Prof.\,Dr. Eize J. Stamhuis}
+\newcommand{\christian}{Dr. Christian Hamm}
+\newcommand{\rug}{\textsc{rug}\xspace}
+\newcommand{\awi}{\textsc{awi}\xspace}
+\newcommand{\esrig}{\textsc{esrig}\xspace}
+\newcommand{\myStudy}{}
+
+\newcommand{\sd}{\spacedlowsmallcaps{sd}\xspace}
+\newcommand{\ld}{\spacedlowsmallcaps{L{\small{/}}D}\xspace}
+\newcommand{\aoa}{$\alpha$\xspace}
+\newcommand{\al}{$\alpha$}
+\newcommand{\redDot}{\textcolor{myRed}{$\bullet$}\xspace}
+\newcommand{\tri}{{\tiny{$\triangle$}}\xspace}
+\newcommand{\triInv}{\raisebox{1pt}{\tiny{$\triangledown$}}\xspace}
+\newcommand{\cir}{$\circ$}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+	
+\textsc{Learning from Data} -- solutions for homework 5
+
+
+% Main text.
+\onehalfspacing
+% Prevent latex from trying to justify bottom.
+% Justified bottom is achieved by making everything a multitude of \baselineskip.
+\raggedbottom
+% The usual page numbers.
+\pagestyle{plain}
+
+
+
+
+
+\section{Question 1} %******************************************************
+Since all necessary values seem to be given, we simply calculate the expected in-sample error using the formula given.
+
+The smallest $N$ that has an in-sample error of $E_{in} > 0.008$ is $N = 100$. The answer is \emph{c}.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 2} %******************************************************
+First, generate some points that fit the classification boundaries given in the figure. Create some random points with $-1 \leq x_1, x_2 \leq 1$. Then, classify them using the following conditions: +1 for $(\| \mathbf{x} - (1,0) \| > 0.7 \land |x_1| < 0.8)$. Apply the nonlinear transform to the points and use the perceptron algorithm to learn the weight vector $\tilde{\mathbf{w}}$ for classifying them in $\mathcal{Z}$-space. Here, $\tilde{w_1}$ is negative while $\tilde{w_2}$ is positive, therefore answer \emph{d} applies. The classified points in $\mathcal{X}$ and $\mathcal{Z}$ space are shown in figure~\ref{fig:2}.
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{hw5-figure2}
+	\caption{Classified points in $\mathcal{X}$ and $\mathcal{Z}$ space. Large points are training points, small ones belong to the test data set.}
+	\label{fig:2}
+\end{figure}
+\clearpage
+
+
+\section{Question 3} %******************************************************
+Find the VC dimension for a 4\textsuperscript{th} order nonlinear transform function.
+The VC-dimension $d_{VC}$ for a nonlinear feature transform $\Phi_Q$ of order $Q$ can be
+\begin{equation}
+d_{VC} \leq \frac{Q(Q+3)}{2} + 1.
+\end{equation}
+See the book page 105 for more.
+For $Q = 4$ we get $d_{VC} \leq 15$. Thus, the smallest choice that is not smaller than 15 is c: 15.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 4} %*******************************************************
+
+Find $\frac{\partial{E}}{\partial{u}}$ where $E(u,v) = (ue^v - 2ve^{-u})^2$.\\
+
+First, we apply the chain rule to get rid of the square brackets. Substitute the inner term by $w$ so that
+\begin{equation}
+w = (ue^v - 2ve^{-u}).
+\end{equation}
+We can now calculate the derivative of the outer term $w^2$ and the inner term separately and combine them to
+\begin{equation}
+\frac{\partial{E}}{\partial{u}} = \frac{\partial}{\partial{w}}w^2 \cdot \frac{\partial{}}{\partial{u}}(ue^v - 2ve^{-u}).
+\end{equation}
+The outer derivative is given by
+\begin{eqnarray}
+\frac{\partial}{\partial{w}}w^2 & = & 2w\\[10pt]
+								& = & 2(ue^v - 2ve^{-u})
+\end{eqnarray}
+The inner derivative is given by
+\begin{eqnarray}
+\frac{\partial{}}{\partial{u}}(ue^v - 2ve^{-u})	& = &\frac{\partial{}}{\partial{u}} ue^v - \frac{\partial{}}{\partial{u}} 2ve^{-u})\\[10pt]
+												& = &1\cdot e^v - 2v(-e^{-u})\\[10pt]
+												& = & e^v + 2ve^{-u}
+\end{eqnarray}
+We can now combine the inner and outer parts to get
+\begin{equation}
+\frac{\partial{E}}{\partial{u}} = 2(ue^v - 2ve^{-u})(e^v + 2ve^{-u}).
+\end{equation}
+
+This corresponds to answer \emph{e}.
+
+
+
+
+
+\section{Question 5} %*******************************************************
+Compute the minimum number of generations to optimize the vector $w = \left(\begin{smallmatrix}1\\1\end{smallmatrix}\right)$ that lives in the $(u,v)$ space until $E(w) < 10^{-14}$.\\
+First, we need the partial derivative in $v$-direction as well. Using the process outlined in question 5 above, we get
+\begin{equation}
+\frac{\partial{E}}{\partial{v}} = 2(ue^v - 2ve^{-u})(ue^v - 2e^{-u}).
+\end{equation}
+
+With both partial derivatives we can construct the gradient vector
+\begin{equation}
+\nabla E = \begin{pmatrix}\frac{\partial{E}}{\partial{u}}\\\frac{\partial{E}}{\partial{v}}\end{pmatrix}
+\end{equation}
+This vector lives in the $(u,v)$ space and points into the direction of the largest change of $E$.
+To improve the weight vector at the current iteration $\left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i)}$ we need to move the previous iterations weight vector $\left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i-1)}$ into the gradient's negative direction with the distance $\eta$.
+The new position of the weights $\left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i)}$ is therefore given by
+\begin{equation}
+\left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i)} = \left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i-1)} - \nabla E \cdot \eta
+\end{equation}
+See \verb|hw5-question5-7.py| for the code.\\
+The number of iterations needed is 10, therefore the answer is \emph{d}. See figure~\ref{fig:5} for the progression of the gradient descent.
+\begin{figure}[!h]
+	\includegraphics[width=.98\textwidth]{hw5-figure5}
+	\caption{Progression of the gradient descent, starting at \textcolor{red}{$\star$} and ending after 10 iterations.}
+	\label{fig:5}
+\end{figure}
+\clearpage
+
+
+
+
+\section{Question 6} %*******************************************************
+What is the final value of $w$ after reaching $E(w) < 10^{-14}$?\\
+See \verb|hw5-question5-7.py| for the code.\\
+The final weight vector is $w = \left(\begin{smallmatrix}0.045\\0.024\end{smallmatrix}\right)$. This corresponds to answer \emph{e}.
+\vspace{\baselineskip}
+
+
+\section{Question 7} %*******************************************************
+What is the final value of $E(w)$ after 15 iterations with moving in $u$ and $v$ direction separately within each iteration?\\
+
+Within each iteration, we do
+\begin{equation}
+\left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i)} = \left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i-1)} - \left(\begin{smallmatrix}\frac{\partial{E}}{\partial{u}}\\0\end{smallmatrix}\right) \cdot \eta
+\end{equation}
+followed by 
+\begin{equation}
+\left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i)} = \left(\begin{smallmatrix}u\\v\end{smallmatrix}\right)^{(i-1)} - \left(\begin{smallmatrix}0\\\frac{\partial{E}}{\partial{v}}\end{smallmatrix}\right) \cdot \eta.
+\end{equation}
+This is like walking around Manhattan, making only 90° turns.
+After 15 iterations, we have arrived at $E(w) = $2.91$\cdot$10\textsuperscript{-1}. This corresponds to answer \emph{a}. See figure~\ref{fig:7} for the progression of the gradient descent. The final result is notably degraded in comparison to the original gradient descent from Question 5.
+\begin{figure}[!h]
+	\definecolor{bottlegreen}{rgb}{0.2,.7,0.5}
+	\includegraphics[width=\textwidth]{hw5-figure7}
+	\caption{Progression of the original (white line) and modified gradient descent (\textcolor{bottlegreen}{--}), starting at \textcolor{red}{$\star$} and ending after 15 iterations.}
+	\label{fig:7}
+\end{figure}
+
+
+
+\clearpage
+
+\section{Question 8} %*******************************************************
+The solution is to code the logarithmic regression with stochastic gradient descent in Python and run it for 100 runs with one training ($N = 100$) and testing ($N = 1000$) data set each. See \verb|hw5-question8-9.py| and \verb|learningModels.py| for the code.
+To answer the question, the cross entropy error of the testing sets is averaged over all data sets. The result is $E_{out} \approx 0.103$, which is closest to answer \emph{d}.
+ 
+
+
+
+
+\section{Question 9} %*******************************************************
+With the same code as in Question 8, we simply average the number of iterations it takes the stochastic gradient descent to converge until $\| \mathbf{w}^{t} - \mathbf{w}^{t-1} \| < 0.01$ over all runs. The average number iterations was 340.52, which corresponds to answer \emph{a}.
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{hw5-figure8-9shuffledPermutation}
+	\caption{Convergence of the average number of iterations that the learning algorithm took to complete the stochastic gradient descent (SGD). Left: using the same permutation of input points for each epoch of the SGD. Right: using a different permutation of input points in each epoch.}
+	\end{figure}
+
+
+
+\clearpage
+
+\section{Question 10} %*******************************************************
+As the classifier for the perceptron is $\text{\emph{sign}}(\mathbf{w}^T \cdot \mathbf{x})$, we are interested in an error function that has a zero gradient as soon as the sign of $\mathbf{w}^T \cdot \mathbf{x}$ matches that of $y = 1$ for a given data point. To see the different error measures for the case $y = 1$ in action, see figure~\ref{fig:10}. The error function of solution \emph{e} features a derivative of $0$ for all positive  $\mathbf{w}^T \cdot \mathbf{x}$ and would therefore stop the algorithm immediately if a match between $\mathbf{w}^T \cdot \mathbf{x}$ and $y = 1$ is achieved. All other functions would not lead to immediate termination of the algorithm once the signs of $sign(\mathbf{w}^T \cdot \mathbf{x})$ and $y = 1$ are equal. The error function of choice is therefore \emph{e}.
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{hw5-figure10}
+	\caption{Plot of the error functions for different outputs of $\mathbf{w}^T \cdot \mathbf{x}$ for $y = 1$. Error function \emph{E} is the only one that would terminate the gradient descent algorithm immediately for matching signs of $\mathbf{w}^T \cdot \mathbf{x}$ and $y = 1$}
+	\label{fig:10}
+\end{figure}
+\end{document})
