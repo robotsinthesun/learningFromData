@@ -1,3 +1,5 @@
+#coding: utf8
+
 import numpy
 
 
@@ -63,12 +65,26 @@ class linearRegressionAlgorithm:
 		self.Y = Y
 
 	# Run the linear regression algorithm.
-	def learn(self):
+	def learn(self, weightDecayLambda=0):
+
+		# Lambda matrix for weight decay.
+		lambdas = numpy.identity(self.X.shape[1]) * weightDecayLambda
+		# Use numpy to solve for weight vector.
+		WReg = numpy.linalg.solve(self.X.T.dot(self.X) + lambdas, self.X.T.dot(self.Y))
+
+		''' This was without weight decay.
 		# Create the pseude inverse of the input vector.
 		pseudoInverseX = numpy.linalg.pinv(self.X)
 		# Get the weights.
-		W = numpy.dot(pseudoInverseX, self.Y)
-		return W
+		W = numpy.dot(pseudoInverseX + lambdas, self.Y)
+		'''
+		return WReg
+
+	def calcMeanSquareError(self, X, Y, W):
+		X = numpy.hstack([numpy.ones((X.shape[0],1)),X])
+		print Y - numpy.dot(X,W)
+
+		return None#numpy.average( Y - numpy.dot(X,W))
 
 
 
@@ -176,6 +192,12 @@ def weightsToPoints(W):
 	# Calculate points at x1 = -1 and x1 = 1
 	return numpy.array([   [-1, m * -1 + b],   [1, m * 1 + b]   ])
 
-def classifySign(p, W):
-	x = numpy.hstack([1, p])
-	return numpy.sign(W.dot(x))
+def classifySign(X, W):
+	# Append zeroth coordinate of 1.
+	X = numpy.vstack([numpy.ones(X.shape[0]), X.T]).T
+	return numpy.sign(numpy.dot(X,W))
+
+def calcClassificationError(X, Y, W):
+	# If the signs of X·W and Y differ, their product will be negative, otherwise positive.
+	# Sum up the positive products and divide by number of points
+	return 1 - numpy.sum(((classifySign(X, W) * Y) + 1) / 2.) / X.shape[0]
