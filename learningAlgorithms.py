@@ -1,6 +1,8 @@
 #coding: utf8
 
 import numpy
+import quadprog
+import cvxopt
 
 
 
@@ -84,7 +86,7 @@ class linearRegressionAlgorithm:
 		X = numpy.hstack([numpy.ones((X.shape[0],1)),X])
 		print Y - numpy.dot(X,W)
 
-		return None#numpy.average( Y - numpy.dot(X,W))
+		return None
 
 
 
@@ -167,6 +169,84 @@ class logarithmicRegressionAlgorithm:
 
 
 
+
+
+
+class svmAlgorithm:
+	def __init__(self):
+		foo = "foo"
+
+	def learn(self,X,Y):
+		nPoints = Y.shape[0]
+		coeffs = []
+		# Set up quadratic coefficients.
+		for n in range(nPoints):
+			row = []
+			for m in range(nPoints):
+				row.append(Y[n]*Y[m]*numpy.dot(X[n],X[m]))
+			coeffs.append(row)
+
+		alphaCoeffs = numpy.array(coeffs)
+
+		# Now, use quadprog to solve the optimization problem.
+		# minimize 0.5 alpha.T * coeffsAlpha * alpha + (-1).T * alphas
+		# subject to y*alphas = 0
+	#	q = -numpy.ones(nPoints)
+	#	print alphaCoeffs
+	#	print q
+	#	print Y
+
+		#alphas = self.quadprog_solve_qp(P=alphaCoeffs, q=q, G=None, h=None, A=Y, b=0)
+	#	alphas = self.cvxopt_solve_qp(P=alphaCoeffs, q=q, G=None, h=None, A=Y, b=0)
+		'''
+		qp_G = .5 * (alphaCoeffs + alphaCoeffs.T)   # Make sure P is symmetric.
+		# Set up the linear term -1.T * alphas.
+		qp_a = -numpy.zeros(nPoints)
+		qp_C = -Y#numpy.vstack([Y, None]).T
+		qp_b = -0#numpy.hstack([0, None])
+		meq = Y.shape[0]
+		alphas = quadprog.solve_qp(qp_G, qp_a, qp_C, qp_b, meq)[0]
+		'''
+	#	print alphas
+		'''
+		YY = numpy.repeat(Y,nPoints).reshape(-1,nPoints).T * numpy.repeat(Y,nPoints).reshape(-1,nPoints)
+		XIndices = X[numpy.arange(nPoints).repeat(nPoints).reshape(-1,nPoints)]
+		XX = numpy.dot(X[XIndices].T, X[XIndices].T)
+		print YY
+		print XX
+		'''
+		W = [0,0,1]
+		nSupportVectors = 3
+		return W, nSupportVectors
+
+	def quadprog_solve_qp(self, P, q, G=None, h=None, A=None, b=None):
+		# Taken from here: https://scaron.info/blog/quadratic-programming-in-python.html
+		# Set up the quadratic term. qp_G = 0.5 *  alpha.T * coeffsAlpha * alpha.
+		qp_G = .5 * (P + P.T)   # make sure P is symmetric
+		qp_a = -q
+		if A is not None:
+			qp_C = -numpy.vstack([A, G]).T
+			qp_b = -numpy.hstack([b, h])
+			meq = A.shape[0]
+		else:  # no equality constraint
+			qp_C = -G.T
+			qp_b = -h
+			meq = 0
+		return quadprog.solve_qp(qp_G, qp_a, qp_C, qp_b, meq)[0]
+
+	def cvxopt_solve_qp(self, P, q, G=None, h=None, A=None, b=None):
+		P = .5 * (P + P.T)  # make sure P is symmetric
+		args = [numpy.matrix(P), numpy.matrix(q)]
+		if G is not None:
+			args.extend([numpy.matrix(G), numpy.matrix(h)])
+			if A is not None:
+				args.extend([numpy.matrix(A), numpy.matrix(b)])
+		sol = cvxopt.solvers.qp(*args)
+		if 'optimal' not in sol['status']:
+			return None
+		return numpy.array(sol['x']).reshape((P.shape[1],))
+
+
  ##  ##  ##### ##     #####   ##### #####   #####
  ##  ## ##     ##     ##  ## ##     ##  ## ##
  ###### ####   ##     ##  ## ####   ##  ##  ####
@@ -201,3 +281,4 @@ def calcClassificationError(X, Y, W):
 	# If the signs of X·W and Y differ, their product will be negative, otherwise positive.
 	# Sum up the positive products and divide by number of points
 	return 1 - numpy.sum(((classifySign(X, W) * Y) + 1) / 2.) / X.shape[0]
+
