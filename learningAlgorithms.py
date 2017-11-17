@@ -84,9 +84,7 @@ class linearRegressionAlgorithm:
 
 	def calcMeanSquareError(self, X, Y, W):
 		X = numpy.hstack([numpy.ones((X.shape[0],1)),X])
-		print Y - numpy.dot(X,W)
-
-		return None
+		return numpy.mean(numpy.power((numpy.dot(X, W) - Y), 2))
 
 
 
