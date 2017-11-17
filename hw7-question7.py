@@ -3,7 +3,7 @@
 
 import numpy
 from matplotlib import pyplot as plt
-from learningAlgorithms import *
+#from learningAlgorithms import *
 from regression import *
 
 rhos = numpy.arange(10000)*0.0005
@@ -19,7 +19,7 @@ for rho in rhos:
 							[rho, 1],
 							[1,0]])
 
-	# Leave one out three (each point once).
+	# Leave one out of three (each point once).
 	EValConstAll = []
 	EValLinAll = []
 	#colors = ['r', 'b', 'g']
@@ -48,11 +48,14 @@ print "Model validation error difference of {d:2.6f} found for rho = {r:2.4f}.".
 
 plt.plot(rhos, errorDiffsAll)
 for choice, label, color in zip(rhoChoices, ['a', 'b', 'c', 'd'], ['r', 'g', 'b', 'm']):
-	plt.plot([choice, choice], [0,1], "{c:s}-".format(c=color), label=label)
+	plt.plot(choice, .05, "{c:s}v".format(c=color), label=label)
 plt.legend()
+plt.ylim(0,5)
+plt.xlabel('$\\rho$')
+plt.ylabel('Mean square error difference')
 plt.show()
 
-
+'''
 points = numpy.array([	[-1, 0],
 						[rhoFinal, 1],
 						[1,0]])
@@ -60,6 +63,7 @@ plt.plot(points[:,0], points[:,1], 'r.')
 plt.plot([-1, numpy.ceil(rhoFinal)], [coeffsConst[0], coeffsConst[0]], 'g-')
 plt.plot([-1,numpy.ceil(rhoFinal)], [coeffsLin[0]+coeffsLin[1]*-1, coeffsLin[0]+coeffsLin[1]*numpy.ceil(rhoFinal)], 'b-')
 plt.show()
+'''
 '''
 	if abs(EValLin - EValConst) < 0.01:
 		print "Tie!"

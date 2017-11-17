@@ -282,3 +282,10 @@ def calcClassificationError(X, Y, W):
 	# Sum up the positive products and divide by number of points
 	return 1 - numpy.sum(((classifySign(X, W) * Y) + 1) / 2.) / X.shape[0]
 
+def calcMeanSquareError(X, Y, W):
+	# Append the 0 coordinate of 1.
+	if X.shape == ():
+		X = numpy.array([1, X])
+	else:
+		X = numpy.hstack([numpy.ones((X.shape[0],1)),X])
+	return numpy.mean(numpy.power((numpy.dot(X, W) - Y), 2))
