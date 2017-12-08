@@ -42,9 +42,6 @@ def regression(data, coeffFactors):
 
 
 def calcMeanSquareError(X, Y, coeffs):
-	# Multiply X with coefficients and sum up.
-	#YCalc = numpy.sum(numpy.multiply(numpy.repeat(X.T, 2).reshape(-1,2), coeffs), axis=1)
-	#return numpy.sum(numpy.power(Y - YCalc, 2))
 	# Append the 0 coordinate of 1.
 	if X.shape == ():
 		X = numpy.array([1, X])

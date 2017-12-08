@@ -86,6 +86,11 @@ class linearRegressionAlgorithm:
 		X = numpy.hstack([numpy.ones((X.shape[0],1)),X])
 		return numpy.mean(numpy.power((numpy.dot(X, W) - Y), 2))
 
+	def classify(self, X, W):
+		# Append zeroth coordinate of 1.
+		X = numpy.vstack([numpy.ones(X.shape[0]), X.T]).T
+		return numpy.sign(numpy.dot(X,W))
+
 
 
  ##     ####   #####  ####  #####  ###### ###### ##  ## ##  ## ###### ####    #####   ##### #####
@@ -166,6 +171,110 @@ class logarithmicRegressionAlgorithm:
 		return numpy.exp(s) / (1.+numpy.exp(s))
 
 
+
+
+
+ #####  #####   #####   ##     #####  ####  #####  ##  ## ###### ##  ##  #####
+ ##  ## ##  ## ##       ##    ##     ##  ## ##  ## ### ##   ##   ### ## ##
+ ##  ## #####  ####     ##    ####   ##  ## ##  ## ######   ##   ###### ##
+ #####  ##  ## ##       ##    ##     ###### #####  ## ###   ##   ## ### ## ###
+ ## ##  ##  ## ##       ##    ##     ##  ## ## ##  ##  ##   ##   ##  ## ##  ##
+ ##  ## #####  ##       ###### ##### ##  ## ##  ## ##  ## ###### ##  ##  ####
+
+
+
+class rbf:
+
+	def __init__(self):
+		self.KCenters = []
+		self.indicesKToPoints = []
+		self.indicesPointsToK = []
+		self.W = []
+
+
+	def learn(self, X, Y, K, gamma):
+
+		self.X = X
+		self.Y = Y
+		self.K = K
+
+		# Run Lloyd's algorithm to find clusters.
+		self.findClusters()
+		# Test for empty clusters.
+		if numpy.any(numpy.isnan(self.KCenters)):
+			return False
+
+		# Now, find the weights.
+		# First, add the bias coordinate to the K centers.
+		KCenters = numpy.hstack([numpy.ones((self.KCenters.shape[0],1)), self.KCenters])
+		#print self.KCenters
+		# Set up the rbf coefficients matrix.
+		# 1st dimension is data points, 2nd dimnension is K centers, 3rd dimension is point x and y.
+		X = numpy.hstack([numpy.ones((self.X.shape[0],1)), self.X])
+		phi = numpy.exp(-gamma * numpy.linalg.norm(X[:, None] - KCenters, axis=2))
+		# Create the pseude inverse of the coefficients matrix.
+		pseudoInverseX = numpy.linalg.pinv(phi)
+		# Get the weights.
+		self.W = numpy.dot(pseudoInverseX, self.Y)
+
+		return True
+
+
+	# LLoyds algorithm for finding the clusters.
+	def findClusters(self):
+		# Find cluster centers using Lloyd's algorithm.
+		boundsMin = numpy.min(self.X, axis=0)
+		boundsMax = numpy.max(self.X, axis=0)
+		self.KCenters = numpy.random.random((self.K, self.X.shape[1])) * (boundsMax - boundsMin) + boundsMin
+		# Iterate centers.
+		for i in range(1000):
+
+			# First, find clusters. These are the groups of points that are nearer to the current center than to any other.
+			# Get vectors from each point to each center.
+			# See this post for how to subtract all K centers from each point.
+			# https://stackoverflow.com/questions/33303348/numpy-subtract-add-1d-array-from-2d-array/33303590
+			vectorsPointToCenter = self.KCenters[:,None] - self.X
+			# Get distances of the K-to-point vectors.
+			distancesKToPoints = numpy.linalg.norm(vectorsPointToCenter, axis=2)
+			# For each K, get the point distance rank.
+			# The cluster where a point belongs to has a 0 at that point's position.
+			ranksKToPoints = numpy.argsort(distancesKToPoints, axis=0)
+			# For each point, get the index of the corresponding cluster.
+			self.indicesPointsToK = ranksKToPoints[0,:]
+			# For each cluster, get the indices of the corresponding points.
+			# See this post for info on argwhere: https://stackoverflow.com/questions/432112/is-there-a-numpy-function-to-return-the-first-index-of-something-in-an-array
+			self.indicesKToPoints = []
+			for k in range(self.K):
+				self.indicesKToPoints.append(numpy.argwhere(self.indicesPointsToK==k)[:,0].tolist())
+
+			# Then, move the cluster centers to the average of the cluster's points.
+			centersOld = numpy.copy(self.KCenters)
+			for k in range(self.K):
+				self.KCenters[k] = numpy.average(self.X[self.indicesKToPoints[k],:], axis=0)
+			if numpy.all(centersOld == self.KCenters):
+				break
+
+
+	def classify(self, X, gamma):
+		# First, add the bias coordinate to the K centers.
+		KCenters = numpy.hstack([numpy.ones((self.KCenters.shape[0],1)), self.KCenters])
+		# Append zeroth coordinate of 1.
+		X = numpy.vstack([numpy.ones(X.shape[0]), X.T]).T
+		# Create the phi matrix.
+		phi = numpy.exp(-gamma * numpy.linalg.norm(X[:, None] - KCenters, axis=2))
+		return numpy.sign(numpy.dot(phi, self.W))
+
+
+
+
+
+
+  ##### ##  ## #####  #####   ####  ##### ######   ##  ##  ##### #### ###### ####  #####    ##  ##  ####   ####  ##  ## ###### ##  ##  #####
+ ##     ##  ## ##  ## ##  ## ##  ## ##  ##  ##     ##  ## ##    ##  ##  ##  ##  ## ##  ##   ###### ##  ## ##  ## ##  ##   ##   ### ## ##
+  ####  ##  ## ##  ## ##  ## ##  ## ##  ##  ##     ##  ## ####  ##      ##  ##  ## ##  ##   ###### ##  ## ##     ######   ##   ###### ####
+     ## ##  ## #####  #####  ##  ## #####   ##     ##  ## ##    ##      ##  ##  ## #####    ##  ## ###### ##     ##  ##   ##   ## ### ##
+     ## ##  ## ##     ##     ##  ## ## ##   ##      ####  ##    ##  ##  ##  ##  ## ## ##    ##  ## ##  ## ##  ## ##  ##   ##   ##  ## ##
+ #####   ####  ##     ##      ####  ##  ##  ##       ##    ##### ####   ##   ####  ##  ##   ##  ## ##  ##  ####  ##  ## ###### ##  ##  #####
 
 
 

@@ -1,0 +1,210 @@
+\documentclass[	11pt,
+				a4paper,
+				twoside,
+				titlepage,
+				%bibtotocnumbered,
+				bibtotoc,
+				openright,
+				cleardoublepage=empty
+				]{scrartcl}
+
+% Font- and input encryption
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Language settings.
+\usepackage[english]{babel}
+
+% Load layout stuff.
+\usepackage[nochapters]{theStyle}
+
+
+
+% Bibliography style
+\usepackage{natbib}
+\bibliographystyle{DavidGer}
+
+% Single bib entries in text.
+\usepackage{bibentry}
+
+% Smaller font and tight lead for bibliography.
+\def\bibfont{\footnotesize}
+\setlength{\bibsep}{8.0pt}
+
+% Document data. ******************************************
+\newcommand{\me}{Paul Bomke}
+\newcommand{\sd}{\spacedlowsmallcaps{sd}\xspace}
+\newcommand{\ld}{\spacedlowsmallcaps{L{\small{/}}D}\xspace}
+\newcommand{\aoa}{$\alpha$\xspace}
+\newcommand{\al}{$\alpha$}
+\newcommand{\redDot}{\textcolor{myRed}{$\bullet$}\xspace}
+\newcommand{\tri}{{\tiny{$\triangle$}}\xspace}
+\newcommand{\triInv}{\raisebox{1pt}{\tiny{$\triangledown$}}\xspace}
+\newcommand{\cir}{$\circ$}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+	
+\textsc{Learning from Data} -- solutions for the final exam
+
+
+% Main text.
+\onehalfspacing
+% Prevent latex from trying to justify bottom.
+% Justified bottom is achieved by making everything a multitude of \baselineskip.
+\raggedbottom
+% The usual page numbers.
+\pagestyle{plain}
+
+
+
+
+
+\section{Question 1} %******************************************************
+The dimensionality of a polynomial transform $\varPhi_Q$ of order $Q = 10$ (excluding the additional coordinate $z_0 = 1$) is given by
+\begin{equation}
+\tilde{d} = \frac{Q(Q+3)}{2} = \frac{10 \cdot 13}{2} = 65.
+\end{equation}
+See the textbook p. 104 for reference.
+
+The answer is therefore \emph{e}: \emph{None of the above}.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 2} %******************************************************
+We consider the different options.
+\begin{alnum}
+	\item 	\emph{False}. In the singleton hypothesis set, $g$ must be $\bar{g}$, so $\bar{g} \in \mathcal{H}$.
+	\item	\emph{False}. If $g^{\mathcal{D}}$ are all real valued constants, their average $\bar{g}$ must be so as well, so $\bar{g} \in \mathcal{H}$.
+	\item	\emph{False}. Averaging the weights of different linear regression models will always lead to another linear regression model.
+	\item	\emph{True?} As it is unlikely that the answer to this question is "None of the above" again, it must be the logistic regression :)
+\end{alnum}
+
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 3} %******************************************************
+In general, we have overfitting if -- when transitioning from one hypothesis to another -- the in-sample error $E_{\textit{in}}$ decreases while the out-of-sample error $E_{\textit{out}}$ increases.\\
+\begin{alnum}
+	\item 	\emph{True}. $E_{in}$ has to decrease to meet the above definition.
+	\item	\emph{True}. $E_{out}$ has to increase to meet the above definition.
+	\item	\emph{True}. Decreasing $E_{in}$ and increasing $E_{out}$ leads to a difference in $(E_{out} - E_{in})$.
+	\item	\emph{False}. A change in $(E_{out} - E_{in})$ occurs most of the time, e.g. when $E_{out}$ does not improve as fast as $E_{in}$ during training (see lecture 11, slide 4).
+	\item	\emph{True}. Overfitting is a relative term that is always based on the comparison between two or more hypotheses.
+\end{alnum}
+
+The correct answer is \emph{d}.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 4} %*******************************************************
+We consider the different options.
+\begin{alnum}
+	\item 	\emph{False}. Deterministic and stochastic noise can occur simultaneously.
+	\item	\emph{False}. Deterministic noise is the difference between the best fit hypothesis $h\star$ and the target function $f$. For different hypothesis sets, the deterministic noise can be different.
+	\item	\emph{False}. As in \emph{b}, deterministic noise depends on the difference between $h\star$ and $f$, so it also depends on $f$.
+	\item	\emph{True}. Stochastic noise stems from deviations of the data from the target function $f$. These can be artifacts from data sampling or a result of a probability distribution in the data. It does not have anything to do with the hypothesis set.
+	\item	\emph{False}. The target distribution may directly affect stochastic noise as is produces data points that deviate from the expected value of the target function with a certain probability.
+\end{alnum}
+The correct answer is \emph{d}.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 5} %*******************************************************
+The Tikhonov matrix $\Gamma$ is an identity matrix scaled by a vector $\alpha$. This can be used to regularize different weights (corresponding to the polynomial terms of different order) to individual degrees.
+From the textbook p. 130 we know that for the weight decay regularizer, the condition $\mathbf{w}_{\text{lin}}{}^T\mathbf{w}_{\text{lin}} \leq C$ leads to $\mathbf{w}_{\text{lin}} = \mathbf{w}_{\text{reg}}$. Now, one valid Tikhonov matrix to use would be $\Gamma = \mathbf{0}$ sow we'll get the weight decay regularizer. Therefore, the same condition must apply and $\mathbf{w}_{\text{lin}} = \mathbf{w}_{\text{reg}}$.
+
+The correct answer is \emph{a}.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 6} %*******************************************************
+The correct answer is \emph{b}.
+\vspace{\baselineskip}
+
+
+
+\section{Questions 7--10} %*******************************************************
+See the file \verb|finalExam-question7-10.py| for the code. The correct answers are \emph{d}, \emph{b}, \emph{e} and \emph{a}.
+\vspace{\baselineskip}
+
+
+
+
+\section{Question 11} %*******************************************************
+See the file \verb|finalExam-question11-12.py| for the code.
+From looking the the points in $\mathcal{Z}$-space, we can determine the support vectors and deduce the classifier line and margins from these. A plot of the data set including the classifier and margin lines is given in figure~\ref{fig:question11}.\\
+We can now deduce $w_1$, $w_2$ and $b$ from the graph.
+\begin{ronum}
+	\item[\cir] The classifier line is vertical, so the $z_2$ component does not have an influence and therefore $w_2 = 0$.
+	\item[\cir] The $z_1$-components of the support vectors are either 0 or 1, therefore the vertical classifier line passes through $z_1 = 0.5$.
+	\item[\cir] As all points on the decision boundary have $z_1 = 0.5$, we get $\mathbf{w}^T\mathbf{z} + b = w_1\cdot0.5 + b = 0$ when using $b = -0.5$ and $w_1 = 1$.
+\end{ronum}
+ So we get $(w_1, w_2, b) = (1, 0, -0.5)$ which corresponds to solution \emph{c}.
+ 
+ \section{Question 12} %*******************************************************
+ See the file \verb|finalExam-question11-12.py| for the code. See figure~\ref{fig:question11} for the classifier boundary and support vectors in $\mathcal{X}$-space. The correct answer is \emph{c}.
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{finalExam-figure11-12}
+	\caption{Left: data set in $\mathcal{Z}$-space with support vectors, classifier line and margins marked. Right: data set in $\mathcal{X}$-space.}
+	\label{fig:question11}
+\end{figure}
+
+\section{Question 13--18} %*******************************************************
+See the file \verb|finalExam-question13-18.py| for the code. The correct answers are \emph{a}, \emph{e}, \emph{d}, \emph{d}, \emph{c} and \emph{a}.
+\vspace{\baselineskip}
+
+\section{Question 19} %*******************************************************
+The correct answer is \emph{b}. This was found by an educated guess, so I'm looking forward to the solution.
+\vspace{\baselineskip}
+
+\section{Question 20} %*******************************************************
+Figure~\ref{fig:20} shows different scenarios for a constant, real-valued hypothesis. We evaluate them to see how the error of the aggregate behaves. To answer the questions we apply the error measures specified in table~\ref{tab:20}.
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{finalExam-question20}
+	\caption{Three different scenarios for the constant, real-valued hypothesis $g_1$, $g_2$ and the aggregate hypothesis $g_{\text{\emph{agg}}}$. The training data is represented by the three dots ($\bullet$)}
+	\label{fig:20}
+\end{figure}
+\begin{table}[h]
+	\caption{Error measures for the different choices \emph{a-e}.}
+	\label{tab:20}
+	\centering
+	\begin{tabularx}{.7\textwidth}{@{}Lrrr@{}}
+		\toprule
+		Error measure																	&	Case 1	&	Case 2	&	Case 3		\\
+		\midrule
+		$E_{\text{\emph{out}}}$($g_1$)													&		16	&		16	&		36		\\
+		$E_{\text{\emph{out}}}$($g_2$)													&		64	&		64	&		25		\\
+		\emph{mean}($E_{\text{\emph{out}}}$($g_1$), $E_{\text{\emph{out}}}$($g_2$))		&		40	&		40	&		30.5	\\
+		\emph{min}($E_{\text{\emph{out}}}$($g_1$), $E_{\text{\emph{out}}}$($g_2$))		&		16	&		16	&		25		\\
+		\emph{max}($E_{\text{\emph{out}}}$($g_1$), $E_{\text{\emph{out}}}$($g_2$))		&		64	&		64	&		36		\\
+		$E_{\text{\emph{out}}}$($g_{\text{\emph{agg}}}$)								&		4	&		36	&		30.25	\\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+We can now evaluate the answer choices with respect to these measures.
+
+\begin{alnum}
+	\item	$E_{\text{\emph{out}}}(g_{\text{\emph{agg}}}) \leq E_{\text{\emph{out}}}(g_1)$: False by case 2
+	\item	$E_{\text{\emph{out}}}(g_{\text{\emph{agg}}}) \leq \text{\emph{min}}(E_{\text{\emph{out}}}(g_1), E_{\text{\emph{out}}}(g_2))$: \emph{False} by case 2
+	\item	$E_{\text{\emph{out}}}(g_{\text{\emph{agg}}}) \leq \text{\emph{min}}(E_{\text{\emph{out}}}(g_1), E_{\text{\emph{out}}}(g_2))$: \emph{True} for all cases
+	\item	$E_{\text{\emph{out}}}(g_{\text{\emph{agg}}}) \leq \text{\emph{max}}(E_{\text{\emph{out}}}(g_1), E_{\text{\emph{out}}}(g_2)) \land E_{\text{\emph{out}}}(g_{\text{\emph{agg}}}) \geq \text{\emph{min}}(E_{\text{\emph{out}}}(g_1), E_{\text{\emph{out}}}(g_2)$:	\emph{False} by case 1\\
+\end{alnum}
+
+The correct answer is \emph{c}.
+
+\vspace{\baselineskip}
+
+\end{document})
